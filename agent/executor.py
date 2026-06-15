@@ -19,6 +19,20 @@ def require_live() -> None:
         )
 
 
+def is_trading_enabled() -> bool:
+    """True when Bybit keys are present AND live trading is switched on.
+
+    On-chain decision recording does NOT depend on this — it works with only a
+    funded Mantle wallet. This gates real exchange order placement.
+    """
+    import os
+
+    return bool(
+        bybit.has_trading_keys()
+        and os.environ.get("MOIXA_LIVE_TRADING", "false").lower() == "true"
+    )
+
+
 async def execute_trade(decision: DecisionOutput) -> Optional[TradeResult]:
     if not decision.shouldTrade or decision.direction == "FLAT":
         return None
@@ -73,13 +87,19 @@ async def monitor_position(
     position_id: str,
     decision: DecisionOutput,
     on_close,
-    hold_seconds: int = 28,
+    hold_seconds: Optional[int] = None,
 ) -> None:
     """Hold the position, then close it with the REAL realized return.
 
-    Entry price is read at open; exit price after ``hold_seconds``. Return is
-    the genuine market move (in basis points), direction-adjusted.
+    Entry price is read at open; exit price after the hold. Return is the
+    genuine market move (in basis points), direction-adjusted. Price comes from
+    Bybit's public market-data API (no keys required), so this works even when
+    live trading is off.
     """
+    import os
+
+    if hold_seconds is None:
+        hold_seconds = int(os.environ.get("MOIXA_HOLD_SECONDS", "28"))
     client = bybit.get_client()
     entry = await client.price(decision.token)
     await asyncio.sleep(hold_seconds)

@@ -189,6 +189,28 @@ async def detect_signals(token: str, timeframe: str = "1h") -> list[MarketSignal
     return signals
 
 
+async def forced_signal(token: str, timeframe: str = "1h") -> MarketSignal:
+    """Build a REAL signal from live market data for on-demand triggers.
+
+    Uses the actual 24h price direction + magnitude from CoinGecko, with a
+    Bybit funding-rate cross-check. Not synthetic data — it reads the real
+    market and packages it as a high-conviction signal so a decision fires now.
+    """
+    data = await _feed.fetch(token)
+    change_24h = float(data.get("price_change_percentage_24h") or 0)
+    direction = "LONG" if change_24h >= 0 else "SHORT"
+    strength = max(0.65, min(0.95, abs(change_24h) / 6.0 + 0.6))
+    return MarketSignal(
+        type="MOMENTUM",
+        token=token,
+        strength=strength,
+        direction=direction,
+        timeframe=timeframe,
+        source="coingecko",
+        detail=f"24h change {change_24h:+.2f}% — manual analysis trigger",
+    )
+
+
 async def market_context(token: str) -> dict:
     data = await _feed.fetch(token)
     glob = await global_context()

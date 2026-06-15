@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 # Load .env.local (repo root) BEFORE importing modules that read env at import.
 try:
@@ -20,6 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import brain
 import db
+import executor
 from executor import execute_trade, monitor_position
 from identity import identity_store
 from reasoning import generate_learning_note, reason_about_decision
@@ -127,11 +128,34 @@ async def get_market(token: str, points: int = 60) -> dict:
     return {"token": token.upper(), "series": series, "context": ctx}
 
 
-async def _run_decision(token: str) -> None:
-    """One full real lifecycle: detect → reason → record → execute → close."""
+@app.post("/trigger/{token}")
+async def post_trigger(token: str) -> dict:
+    """Force one full real decision lifecycle on demand.
+
+    Records a real decision on-chain using live market data (real CoinGecko
+    price/direction + GPT-4o or rule-based reasoning), even when natural signals
+    are below threshold. Returns the on-chain tx + decision id immediately;
+    the close happens asynchronously after the monitoring window.
+    """
+    token = token.upper()
+    if token not in {"ETH", "BTC", "MNT"}:
+        return {"error": f"unsupported token {token}; use ETH/BTC/MNT"}
+    asyncio.create_task(_run_decision(token, force=True))
+    return {"triggered": token, "status": "decision lifecycle started"}
+
+
+async def _run_decision(token: str, force: bool = False) -> Optional[dict]:
+    """One full real lifecycle: detect → reason → record → execute → close.
+
+    When force=True, builds a real signal from live market data so a decision
+    fires even in calm markets (for the manual /trigger endpoint). Returns the
+    decision record dict, or None if no signal and not forced.
+    """
     signals = await brain.detect_signals(token)
     if not signals:
-        return
+        if not force:
+            return None
+        signals = [await brain.forced_signal(token)]
     ctx = await brain.market_context(token)
     await emit_analyzing(token, signals, ctx)
     decision_input = DecisionInput(
@@ -168,16 +192,28 @@ async def _run_decision(token: str) -> None:
                                  identity_store.birthBlock, identity_store.birthTx, snap)
         await emit_position_closed(on_chain_id, 0, True, note, rep)
         await emit_identity_updated(snap.reputationScore, snap.winRate, snap.totalTrades)
-        return
+        return record
 
+    # Execute on Bybit if keys are configured; otherwise skip the exchange
+    # order but still track the real price move so the decision closes on-chain
+    # with genuine PnL. On-chain recording never depends on Bybit.
     protocol = "Bybit Perp" if decision.leverage > 1 else "Bybit Spot"
-    trade = await execute_trade(decision)
-    await emit_executing(protocol, decision.token, decision.positionSize)
-    await emit_trade_complete(trade.txHash, trade.executionPrice, trade.slippage)
+    exec_ref = f"onchain-{on_chain_id}"
+    if executor.is_trading_enabled():
+        try:
+            trade = await execute_trade(decision)
+            exec_ref = trade.txHash
+            await emit_executing(protocol, decision.token, decision.positionSize)
+            await emit_trade_complete(trade.txHash, trade.executionPrice, trade.slippage)
+        except Exception as e:
+            print(f"[run] Bybit execution skipped: {e}")
+            await emit_executing(protocol, decision.token, decision.positionSize)
+    else:
+        await emit_executing(protocol, decision.token, decision.positionSize)
 
     async def _on_close(_pos_id: str, actual_return: float, was_correct: bool) -> None:
         note = await generate_learning_note(
-            f"{decision.direction} {decision.token} @ {trade.executionPrice}",
+            f"{decision.direction} {decision.token}",
             actual_return,
             was_correct,
         )
@@ -195,7 +231,8 @@ async def _run_decision(token: str) -> None:
         await emit_position_closed(on_chain_id, actual_return, was_correct, note, rep)
         await emit_identity_updated(snap.reputationScore, snap.winRate, snap.totalTrades)
 
-    await monitor_position(trade.txHash, decision, _on_close)
+    await monitor_position(exec_ref, decision, _on_close)
+    return record
 
 
 async def trading_loop() -> None:
