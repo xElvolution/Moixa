@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Decision {
+  id              String    @id @default(cuid())
+  blockNumber     Int?
+  txHash          String?   @unique
+  timestamp       DateTime  @default(now())
+
+  marketContext   String
+  signalDetected  String
+  signalStrength  Float
+
+  confidenceScore Float
+  decision        String
+  token           String
+  positionSize    Float
+  leverage        Int       @default(1)
+  protocol        String
+
+  riskLevel       String
+  riskReasoning   String
+
+  expectedReturn  Float
+  expectedTime    String
+
+  actualReturn    Float?
+  wasCorrect      Boolean?
+  closedAt        DateTime?
+  closeTxHash     String?
+
+  learningNote    String?
+
+  arkiveHash      String?
+  onChainId       Int?
+
+  executions      TradeExecution[]
+
+  createdAt       DateTime  @default(now())
+
+  @@index([token])
+  @@index([decision])
+  @@index([timestamp])
+}
+
+model TradeExecution {
+  id              String    @id @default(cuid())
+  decisionId      String
+  decision        Decision  @relation(fields: [decisionId], references: [id])
+  protocol        String
+  tokenIn         String
+  tokenOut        String
+  amountIn        Float
+  amountOut       Float?
+  txHash          String    @unique
+  gasUsed         Float?
+  status          String    @default("PENDING")
+  executedAt      DateTime  @default(now())
+
+  @@index([decisionId])
+}
+
+model AgentIdentity {
+  id              String    @id @default(cuid())
+  tokenId         Int       @unique
+  address         String    @unique
+  name            String    @default("MOIXA")
+  birthBlock      Int
+  birthTx         String
+
+  totalTrades     Int       @default(0)
+  correctTrades   Int       @default(0)
+  totalVolume     Float     @default(0)
+  totalPnL        Float     @default(0)
+  winRate         Float     @default(0)
+  sharpeRatio     Float     @default(0)
+  maxDrawdown     Float     @default(0)
+  reputationScore Int       @default(0)
+
+  milestones      Milestone[]
+
+  updatedAt       DateTime  @updatedAt
+}
+
+model Milestone {
+  id              String    @id @default(cuid())
+  identityId      String
+  identity        AgentIdentity @relation(fields: [identityId], references: [id])
+  type            String
+  description     String
+  blockNumber     Int
+  txHash          String
+  achievedAt      DateTime  @default(now())
+
+  @@index([identityId])
+}
+
+model PerformanceSnapshot {
+  id              String    @id @default(cuid())
+  date            DateTime
+  portfolioValue  Float
+  dailyPnL        Float
+  winRate         Float
+  tradesCount     Int
+  reputationScore Int
+  createdAt       DateTime  @default(now())
+
+  @@index([date])
+}
