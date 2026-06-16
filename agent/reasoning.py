@@ -15,6 +15,34 @@ except ImportError:
 _client: Optional["AsyncOpenAI"] = None
 
 
+def _model() -> str:
+    return os.environ.get("OPENAI_MODEL", "gpt-4o")
+
+
+def _is_reasoning_model(model: str) -> bool:
+    # o-series and gpt-5 reasoning models reject `temperature` and use
+    # `max_completion_tokens` instead of `max_tokens`.
+    m = model.lower()
+    return m.startswith(("o1", "o3", "o4", "gpt-5"))
+
+
+async def _chat(client, messages, json_mode=False, temperature=0.2, max_tokens=None):
+    """Model-agnostic chat call. Handles gpt vs o-series/gpt-5 param differences."""
+    model = _model()
+    kwargs: dict = {"model": model, "messages": messages}
+    if json_mode:
+        kwargs["response_format"] = {"type": "json_object"}
+    if _is_reasoning_model(model):
+        if max_tokens:
+            kwargs["max_completion_tokens"] = max_tokens
+        # reasoning models don't accept temperature
+    else:
+        kwargs["temperature"] = temperature
+        if max_tokens:
+            kwargs["max_tokens"] = max_tokens
+    return await client.chat.completions.create(**kwargs)
+
+
 def _get_client():
     global _client
     if _client is not None:
@@ -129,19 +157,20 @@ Available capital: ${decision_input.availableCapital}
 Analyze these signals and make a trading decision."""
 
     try:
-        response = await client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
+        response = await _chat(
+            client,
+            [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},
             ],
-            response_format={"type": "json_object"},
+            json_mode=True,
             temperature=0.2,
         )
         content = response.choices[0].message.content or "{}"
         data = json.loads(content)
         return DecisionOutput(**data)
-    except Exception:
+    except Exception as e:
+        print(f"[reasoning] model call failed ({_model()}), using fallback: {e}")
         return _fallback_decision(signals, decision_input)
 
 
@@ -164,9 +193,9 @@ Was correct: {was_correct}
 Write a 1-2 sentence learning note. What worked? What should MOIXA do differently?
 This note is stored on-chain forever, so be specific and concrete."""
     try:
-        response = await client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}],
+        response = await _chat(
+            client,
+            [{"role": "user", "content": prompt}],
             temperature=0.4,
             max_tokens=160,
         )

@@ -21,6 +21,23 @@ Agent #1 NFT mint tx: `0xe6858b4b43c3bc6cd932f97e6ee7a86a65ffc4dab4c88da74c5d15c
 
 On-chain checks: moixaAgent = agent wallet, ownerOf(1) = agent wallet, nextTokenId = 2, totalDecisions = 0.
 
+### MAINNET full lifecycle - real GPT-4.1 LONG trade
+
+`POST /trigger/ETH` on mainnet. GPT-4.1 opened a 3x leveraged LONG ($2000, confidence 0.95):
+> "The detected momentum signal for ETH is exceptionally strong (0.95) and is supported by a solid 24h
+> price increase, indicating sustained buying pressure..."
+
+| Step | Mainnet tx | Block | Status |
+|---|---|---|---|
+| Record #0 (LONG, 3x, $2000) | `0xc442d81d2e1559437ff225011d8b63acb81ef60f6f9f4d3e63723e7d4f367eec` | 96729775 | mined (0x1) |
+| Close #0 | `0x7666bdbb9dd7481d02f4792728904cd6e370309928016419ea74dba60c96babb` | 96729798 | mined (0x1) |
+| Update identity | `0x42b0bb66e1838100536b7f861e86d2422f35b8123b94091b7cd5ba541dd07b92` | 96729800 | mined (0x1) |
+
+Post-run: `MoixaBrain.totalDecisions()` = 1 on mainnet. Reasoning model configurable via `OPENAI_MODEL`
+(gpt-4o / gpt-4.1 / o3 / gpt-5 once org-verified).
+
+View live: https://mantlescan.xyz/tx/0xc442d81d2e1559437ff225011d8b63acb81ef60f6f9f4d3e63723e7d4f367eec
+
 ---
 
 ## 1. Smart contracts - Mantle Sepolia (testnet, full lifecycle tested)
