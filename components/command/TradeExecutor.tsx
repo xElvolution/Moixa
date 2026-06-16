@@ -12,7 +12,7 @@ export function TradeExecutor({ recent }: { recent: Decision[] }) {
     <Card className="overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-5 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
         <span>decision ticker</span>
-        <span className="text-moixa">● live</span>
+        <span className="text-moixa"> live</span>
       </div>
       {recent.length === 0 ? (
         <div className="px-5 py-6 text-center font-mono text-xs text-muted">
@@ -46,7 +46,7 @@ function TickerCell({ d }: { d: Decision }) {
       : ret !== null && ret < 0
       ? 'text-loss-red border-loss-red/30'
       : 'text-white border-border';
-  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '—';
+  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '-';
   return (
     <span
       className={cn(

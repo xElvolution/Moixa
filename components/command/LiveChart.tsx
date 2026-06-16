@@ -100,7 +100,7 @@ export function LiveChart({
         <div className="flex items-center gap-4">
           <div className="text-right">
             <div className="font-mono text-xl font-bold tabular-nums text-white">
-              {last ? formatUSD(last.price, token === 'MNT' ? 4 : 2) : '—'}
+              {last ? formatUSD(last.price, token === 'MNT' ? 4 : 2) : '-'}
             </div>
             <div
               className={cn(

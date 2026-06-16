@@ -11,7 +11,7 @@ from models import AgentStats
 def _derive_address() -> str:
     """Resolve the agent's checksum address from AGENT_PRIVATE_KEY at startup.
 
-    Empty string if the key is missing — persistence rows will just store ''
+    Empty string if the key is missing - persistence rows will just store ''
     rather than crash, and the address can be backfilled later.
     """
     pk = os.environ.get("AGENT_PRIVATE_KEY", "").strip()
@@ -29,7 +29,7 @@ class IdentityStore:
     """Tracks MOIXA's reputation from REAL trade outcomes.
 
     Starts at genesis matching the on-chain mint (reputation 500, zero history).
-    Sharpe and max-drawdown are computed from the actual return series — no
+    Sharpe and max-drawdown are computed from the actual return series - no
     hardcoded performance numbers.
     """
 

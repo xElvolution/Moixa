@@ -27,7 +27,7 @@ export function ReasoningExpander({
           open ? 'text-muted hover:text-white' : 'text-moixa hover:text-white'
         )}
       >
-        {open ? '— collapse' : '+ expand reasoning'}
+        {open ? '- collapse' : '+ expand reasoning'}
       </button>
     </div>
   );

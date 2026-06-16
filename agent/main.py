@@ -164,7 +164,7 @@ async def _run_decision(token: str, force: bool = False) -> Optional[dict]:
     decision = await reason_about_decision(signals, ctx, decision_input)
     await emit_reasoning(decision.fullReasoning, decision.confidenceScore)
 
-    # Record EVERY decision on-chain — including disciplined no-trades.
+    # Record EVERY decision on-chain - including disciplined no-trades.
     tx_hash, on_chain_id, block = await record_decision_onchain(decision, ctx, signals[0])
     record = {
         "id": f"decision-{on_chain_id}",
@@ -180,7 +180,7 @@ async def _run_decision(token: str, force: bool = False) -> Optional[dict]:
 
     if not decision.shouldTrade:
         # No-trade: close immediately as a correct discipline decision.
-        note = "Confidence below threshold — stayed flat to protect capital."
+        note = "Confidence below threshold - stayed flat to protect capital."
         close_tx = await close_decision_onchain(on_chain_id, 0, True, note)
         rep = identity_store.apply_outcome(True, 0)
         snap = identity_store.snapshot()

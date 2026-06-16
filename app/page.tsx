@@ -17,7 +17,7 @@ const FEATURES = [
   {
     title: 'Every thought. On-chain.',
     description:
-      'Not just the trade — the full reasoning. Market context, signal detected, confidence score, risk assessment, expected outcome, actual outcome, learning note. All of it. Permanent. On Mantle.',
+      'Not just the trade - the full reasoning. Market context, signal detected, confidence score, risk assessment, expected outcome, actual outcome, learning note. All of it. Permanent. On Mantle.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00FFD1" strokeWidth="1.6">
         <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -46,7 +46,7 @@ const FEATURES = [
   {
     title: 'MOIXA has a soul.',
     description:
-      'The first trading agent with an on-chain identity that grows. Reputation score, win rate, total volume — all stored in an ERC-8004 NFT that evolves with every decision. Unfakeable. Permanent.',
+      'The first trading agent with an on-chain identity that grows. Reputation score, win rate, total volume - all stored in an ERC-8004 NFT that evolves with every decision. Unfakeable. Permanent.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" strokeWidth="1.6">
         <circle cx="12" cy="6" r="2" />
@@ -85,13 +85,13 @@ const FEATURES = [
     visual: (
       <div className="space-y-2 font-mono text-[11px]">
         <div className="text-muted">
-          <span className="text-moixa">●</span> ANALYZING ETH/USDC...
+          <span className="text-moixa"></span> ANALYZING ETH/USDC...
         </div>
         <div className="text-muted">
-          <span className="text-moixa">●</span> Volume +340% above avg
+          <span className="text-moixa"></span> Volume +340% above avg
         </div>
         <div className="text-muted">
-          <span className="text-moixa">●</span> Confidence 84.7% ▲
+          <span className="text-moixa"></span> Confidence 84.7% ▲
         </div>
         <div className="text-win-green">
           <span>▲</span> LONG ETH | $500 | EXECUTING
@@ -113,7 +113,7 @@ const TERMINAL_STEPS = [
 
 const MANTLE_COMPARE: Array<[string, string, string, 'good' | 'bad']> = [
   ['Finality', '1 block', '12+ blocks', 'good'],
-  ['Gas cost', '~$0.01', '$15–180', 'good'],
+  ['Gas cost', '~$0.01', '$15-180', 'good'],
   ['EVM Compatible', 'Yes', 'Yes', 'good'],
   ['On-chain recording', 'Viable', 'Too expensive', 'good'],
 ];
@@ -159,7 +159,7 @@ function Hero() {
           className="mt-7 max-w-xl text-[15px] leading-relaxed text-muted"
         >
           MOIXA is an autonomous AI trading agent on Mantle. It thinks out loud. Every signal,
-          every decision, every outcome — recorded permanently on-chain. Watch it happen live.
+          every decision, every outcome - recorded permanently on-chain. Watch it happen live.
         </motion.p>
 
         <motion.div

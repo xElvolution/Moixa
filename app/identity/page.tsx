@@ -125,7 +125,7 @@ export default function IdentityPage() {
             <div className="mt-4 space-y-3 text-sm leading-relaxed text-muted">
               <p>
                 ERC-8004 is a proposed standard for autonomous agent identities on EVM chains. The
-                NFT carries the agent’s reputation, total trades, win rate, and milestones — all
+                NFT carries the agent’s reputation, total trades, win rate, and milestones - all
                 stored permanently on-chain.
               </p>
               <p>

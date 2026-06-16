@@ -7,7 +7,7 @@ from typing import Any, Optional, Tuple
 from models import AgentStats, DecisionOutput, MarketSignal
 
 # Import web3 at module load (main thread). web3 7.x runs ``asyncio.Lock()`` at
-# import time, which on Python 3.9 requires a running event loop — importing it
+# import time, which on Python 3.9 requires a running event loop - importing it
 # lazily inside ``asyncio.to_thread`` worker threads would raise "no current
 # event loop". Keep it top-level so the lock is created on the main thread.
 try:
@@ -20,7 +20,7 @@ try:
             from web3.middleware import geth_poa_middleware as _POA  # web3 v6
         except Exception:
             _POA = None
-except Exception:  # web3 not installed — recording is unavailable until deps are
+except Exception:  # web3 not installed - recording is unavailable until deps are
     Web3 = None  # type: ignore
     _POA = None
 
@@ -39,7 +39,7 @@ class RecordingNotConfigured(RuntimeError):
 def _require_configured() -> None:
     if Web3 is None:
         raise RecordingNotConfigured(
-            "web3 is not installed — run `pip install -r requirements.txt`."
+            "web3 is not installed - run `pip install -r requirements.txt`."
         )
     if not _configured():
         raise RecordingNotConfigured(
@@ -48,7 +48,7 @@ def _require_configured() -> None:
         )
 
 
-# ── Minimal ABIs — only the functions/events MOIXA actually calls ──────────────
+# Minimal ABIs - only the functions/events MOIXA actually calls
 # Signatures mirror contracts/MoixaBrain.sol and contracts/MoixaIdentity.sol.
 
 _BRAIN_ABI = [
@@ -153,7 +153,7 @@ def read_birth_block() -> Optional[int]:
         return None
 
 
-# ── Lazy web3 client ───────────────────────────────────────────────────────────
+# Lazy web3 client
 
 _w3: Any = None
 _acct: Any = None
@@ -171,14 +171,14 @@ def _connect() -> bool:
     if _init_failed:
         return False
     if Web3 is None:
-        print("[recorder] web3 not installed — cannot record on-chain")
+        print("[recorder] web3 not installed - cannot record on-chain")
         _init_failed = True
         return False
     try:
         rpc = os.environ.get("MANTLE_RPC_URL", "https://rpc.mantle.xyz")
         w3 = Web3(Web3.HTTPProvider(rpc, request_kwargs={"timeout": 20}))
 
-        # Mantle carries extended extraData like POA chains — inject the
+        # Mantle carries extended extraData like POA chains - inject the
         # middleware so block parsing doesn't choke. Import name differs across
         # web3 v6/v7; _POA is resolved at module load (see top of file).
         if _POA is not None:
@@ -204,7 +204,7 @@ def _connect() -> bool:
         _chain_id = w3.eth.chain_id
         return True
     except Exception as e:
-        # Transient (RPC down, etc.) — don't latch; allow the next cycle to retry.
+        # Transient (RPC down, etc.) - don't latch; allow the next cycle to retry.
         print(f"[recorder] web3 init failed (will retry next cycle): {e}")
         return False
 
@@ -225,7 +225,7 @@ def _send(fn) -> Tuple[str, Any]:
     raw = getattr(signed, "raw_transaction", None) or signed.rawTransaction
     tx_hash = _w3.eth.send_raw_transaction(raw)
     receipt = _w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
-    # web3 v7's HexBytes.hex() drops the 0x prefix (v6 kept it) — normalize so
+    # web3 v7's HexBytes.hex() drops the 0x prefix (v6 kept it) - normalize so
     # explorer links work on both.
     tx_hex = tx_hash.hex()
     if not tx_hex.startswith("0x"):
@@ -233,10 +233,10 @@ def _send(fn) -> Tuple[str, Any]:
     return tx_hex, receipt
 
 
-# ── Unit conversion helpers (float → contract integer units) ───────────────────
+# Unit conversion helpers (float → contract integer units)
 
 def _bps(x: float) -> int:
-    """0–1 ratio → basis points (×10000)."""
+    """0-1 ratio → basis points (×10000)."""
     return int(round(x * 10000))
 
 
@@ -244,7 +244,7 @@ def _cents(x: float) -> int:
     return int(round(x * 100))
 
 
-# ── Public API ─────────────────────────────────────────────────────────────────
+# Public API
 
 async def record_decision_onchain(
     decision: DecisionOutput,
@@ -278,7 +278,7 @@ async def update_identity(stats: AgentStats) -> str:
     return await asyncio.to_thread(_update_identity_real, stats)
 
 
-# ── Real implementations ───────────────────────────────────────────────────────
+# Real implementations
 
 def _market_ctx_str(market_context: dict) -> str:
     price = market_context.get("price")

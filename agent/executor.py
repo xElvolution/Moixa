@@ -22,7 +22,7 @@ def require_live() -> None:
 def is_trading_enabled() -> bool:
     """True when Bybit keys are present AND live trading is switched on.
 
-    On-chain decision recording does NOT depend on this — it works with only a
+    On-chain decision recording does NOT depend on this - it works with only a
     funded Mantle wallet. This gates real exchange order placement.
     """
     import os

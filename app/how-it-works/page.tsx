@@ -10,7 +10,7 @@ const STEPS = [
   {
     title: 'Detect',
     body:
-      'MOIXA scans six market signals in parallel — momentum, volume anomalies, smart-money flow, funding rates, liquidity depth, cross-asset correlation. Signals weaker than 50% strength are discarded.',
+      'MOIXA scans six market signals in parallel - momentum, volume anomalies, smart-money flow, funding rates, liquidity depth, cross-asset correlation. Signals weaker than 50% strength are discarded.',
   },
   {
     title: 'Reason',
@@ -20,7 +20,7 @@ const STEPS = [
   {
     title: 'Record',
     body:
-      'Before the trade fires, the full decision is written to the MoixaBrain contract on Mantle. Reasoning, confidence, expected outcome — all permanent.',
+      'Before the trade fires, the full decision is written to the MoixaBrain contract on Mantle. Reasoning, confidence, expected outcome - all permanent.',
   },
   {
     title: 'Execute',

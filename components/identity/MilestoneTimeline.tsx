@@ -34,7 +34,7 @@ const DEFAULTS: Milestone[] = [
   {
     id: '4',
     type: 'TEN_K_VOLUME',
-    description: '$10K volume threshold — reputation 612',
+    description: '$10K volume threshold - reputation 612',
     blockNumber: 8_297_400,
     txHash: '0x' + 'd'.repeat(64),
     achievedAt: '2026-02-12',
@@ -43,7 +43,7 @@ const DEFAULTS: Milestone[] = [
   {
     id: '5',
     type: 'WIN_RATE_65',
-    description: '65% win rate sustained — reputation 740',
+    description: '65% win rate sustained - reputation 740',
     blockNumber: 8_300_802,
     txHash: '0x' + 'e'.repeat(64),
     achievedAt: '2026-03-02',
@@ -52,7 +52,7 @@ const DEFAULTS: Milestone[] = [
   {
     id: '6',
     type: 'HUNDRED_DECISIONS',
-    description: '100 decisions — reputation 790',
+    description: '100 decisions - reputation 790',
     blockNumber: 8_304_220,
     txHash: '0x' + 'f'.repeat(64),
     achievedAt: '2026-03-20',
@@ -61,7 +61,7 @@ const DEFAULTS: Milestone[] = [
   {
     id: '7',
     type: 'HUNDRED_K_VOLUME',
-    description: '$100K volume — current reputation 847',
+    description: '$100K volume - current reputation 847',
     blockNumber: 8_311_440,
     txHash: '0x' + '1'.repeat(64),
     achievedAt: '2026-04-18',
@@ -78,7 +78,7 @@ export function MilestoneTimeline({ milestones = DEFAULTS }: { milestones?: Mile
           <span className="absolute -left-[26px] top-5 inline-block h-2.5 w-2.5 rounded-full bg-moixa shadow-[0_0_12px_rgba(0,255,209,0.6)]" />
           <Card className="border-l-2 border-l-moixa/40 p-4">
             <div className="flex items-start gap-3">
-              <span className="text-xl">{m.icon ?? '◆'}</span>
+              <span className="text-xl">{m.icon ?? ''}</span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">{m.description}</p>
                 <p className="mt-1 font-mono text-[11px] text-muted">

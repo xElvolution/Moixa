@@ -9,7 +9,7 @@ export async function GET() {
     const data = await r.json();
     return NextResponse.json(data);
   } catch {
-    // Agent unreachable — return genesis state matching the on-chain mint.
+    // Agent unreachable - return genesis state matching the on-chain mint.
     return NextResponse.json({
       agentId: 1,
       name: 'MOIXA',

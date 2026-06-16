@@ -22,7 +22,7 @@ export function Footer() {
             </div>
             <p className="mt-4 max-w-md text-sm text-muted">
               The first trading agent that thinks out loud on-chain. Every signal, every decision,
-              every outcome — permanent on Mantle.
+              every outcome - permanent on Mantle.
             </p>
             <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-muted">
               Every decision. On-chain. Forever.

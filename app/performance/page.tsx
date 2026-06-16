@@ -102,7 +102,7 @@ export default function PerformancePage() {
               <StatRow label="Win Rate" value={`${(stats.winRate * 100).toFixed(1)}%`} rank="Top 15%" highlight />
               <StatRow label="Sharpe" value={stats.sharpeRatio.toFixed(2)} rank="Top 8%" highlight />
               <StatRow label="Max DD" value={`${(stats.maxDrawdown * 100).toFixed(1)}%`} rank="Top 20%" />
-              <StatRow label="Total Volume" value={formatUSD(stats.totalVolume)} rank="—" />
+              <StatRow label="Total Volume" value={formatUSD(stats.totalVolume)} rank="-" />
               <StatRow label="Reputation" value={`${stats.reputationScore}/1000`} rank="Top 5%" highlight />
             </tbody>
           </table>

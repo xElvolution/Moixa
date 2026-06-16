@@ -81,7 +81,7 @@ def _fallback_decision(
 
     reasoning_parts = [
         f"Detected {primary.type.lower().replace('_', ' ')} signal on {primary.token}/{('USDC')}.",
-        f"Signal strength {primary.strength*100:.1f}% — {primary.detail}.",
+        f"Signal strength {primary.strength*100:.1f}% - {primary.detail}.",
         f"Aggregate confidence {confidence*100:.1f}% across {len(signals)} signal{'s' if len(signals) != 1 else ''}.",
     ]
     if should:
@@ -89,7 +89,7 @@ def _fallback_decision(
             f"Position sized at ${size:.0f} ({(size/decision_input.availableCapital)*100:.1f}% of capital)."
         )
     else:
-        reasoning_parts.append("Below threshold — staying FLAT.")
+        reasoning_parts.append("Below threshold - staying FLAT.")
 
     return DecisionOutput(
         shouldTrade=should,

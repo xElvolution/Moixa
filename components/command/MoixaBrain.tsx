@@ -75,7 +75,7 @@ export function MoixaBrain({
 function stateTitle(state: BrainState) {
   switch (state) {
     case 'IDLE':
-      return 'Idle — waiting for signal';
+      return 'Idle - waiting for signal';
     case 'ANALYZING':
       return 'Scanning markets...';
     case 'REASONING':
@@ -141,11 +141,11 @@ function AnalyzingState({ token, signals }: { token: string; signals: MarketSign
             className="rounded-md border border-border bg-bg/40 p-3"
           >
             <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-moixa">
-              <span>● Signal detected</span>
+              <span> Signal detected</span>
               <span className="text-muted">{s.timeframe}</span>
             </div>
             <p className="mt-2 text-sm font-medium text-white">
-              {pretty(s.type)} — {s.token}
+              {pretty(s.type)} - {s.token}
             </p>
             {s.detail && <p className="mt-1 text-xs text-muted">{s.detail}</p>}
             <div className="mt-2 flex items-center gap-2 font-mono text-[11px] text-muted">
@@ -205,7 +205,7 @@ function DecisionState({
       : big === 'SHORT'
       ? 'text-loss-red border-loss-red/40 bg-loss-red/10 shadow-[0_0_36px_rgba(255,68,68,0.35)]'
       : 'text-muted border-border bg-white/5';
-  const arrow = big === 'LONG' ? '▲' : big === 'SHORT' ? '▼' : '—';
+  const arrow = big === 'LONG' ? '▲' : big === 'SHORT' ? '▼' : '-';
 
   return (
     <motion.div
@@ -242,7 +242,7 @@ function DecisionState({
           value={
             decision.expectedReturn
               ? `+${(decision.expectedReturn / 100).toFixed(2)}%`
-              : '—'
+              : '-'
           }
         />
         <Stat label="Window" value={decision.expectedTimeframe ?? '4 hours'} />
@@ -259,7 +259,7 @@ function DecisionState({
 
       {decision.txHash && (
         <div className="rounded-md border border-border bg-bg/50 p-3 font-mono text-[11px] text-muted">
-          <p className="text-moixa">● Recording on Mantle...</p>
+          <p className="text-moixa"> Recording on Mantle...</p>
           <div className="mt-2 flex items-center justify-between gap-2">
             <span>tx</span>
             <a
@@ -294,7 +294,7 @@ function ExecutingState({
       className="flex flex-col gap-4"
     >
       <Badge tone="orange" className="self-start">
-        ● EXECUTING ON {decision.protocol?.toUpperCase() ?? 'MERCHANT MOE'}
+         EXECUTING ON {decision.protocol?.toUpperCase() ?? 'MERCHANT MOE'}
       </Badge>
       <div className="rounded-md border border-warn/30 bg-warn/5 p-4 font-mono text-xs">
         <p className="text-warn">Broadcasting transaction...</p>
@@ -326,7 +326,7 @@ function CompleteState({
       className="flex flex-col gap-4"
     >
       <Badge tone="green" className="self-start">
-        ● TRADE CONFIRMED
+         TRADE CONFIRMED
       </Badge>
       <p className="text-sm text-white">
         Position opened on <span className="text-moixa">{decision.protocol ?? 'Merchant Moe'}</span>

@@ -31,7 +31,7 @@ export function DecisionCard({ d }: { d: Decision }) {
             </span>
           </p>
           <p className="font-mono text-[11px] text-muted">
-            block #{d.blockNumber?.toLocaleString() ?? '—'} · {d.timestamp ? timeAgo(d.timestamp) : 'just now'}
+            block #{d.blockNumber?.toLocaleString() ?? '-'} · {d.timestamp ? timeAgo(d.timestamp) : 'just now'}
           </p>
         </div>
         <Result d={d} />
@@ -62,7 +62,7 @@ export function DecisionCard({ d }: { d: Decision }) {
               </Section>
 
               <Section title="SIGNAL DETECTED">
-                <p className="font-mono text-xs text-muted">{d.signalDetected ?? '—'}</p>
+                <p className="font-mono text-xs text-muted">{d.signalDetected ?? '-'}</p>
                 {d.signalStrength != null && (
                   <p className="font-mono text-[11px] text-muted">
                     strength {(d.signalStrength * 100).toFixed(0)}%
@@ -91,7 +91,7 @@ export function DecisionCard({ d }: { d: Decision }) {
 
               <Section title="EXPECTED">
                 <p className="font-mono text-sm text-white">
-                  {d.expectedReturn != null ? `+${(d.expectedReturn / 100).toFixed(2)}%` : '—'} in{' '}
+                  {d.expectedReturn != null ? `+${(d.expectedReturn / 100).toFixed(2)}%` : '-'} in{' '}
                   {d.expectedTime ?? d.expectedTimeframe ?? '4 hours'}
                 </p>
               </Section>
@@ -124,7 +124,7 @@ export function DecisionCard({ d }: { d: Decision }) {
                   {d.txHash && <TxRow label="Open" hash={d.txHash} />}
                   {d.closeTxHash && <TxRow label="Close" hash={d.closeTxHash} />}
                   <p className="text-muted">
-                    Block <span className="text-white">#{d.blockNumber?.toLocaleString() ?? '—'}</span>
+                    Block <span className="text-white">#{d.blockNumber?.toLocaleString() ?? '-'}</span>
                   </p>
                   <p className="text-muted">
                     Size <span className="text-white">{formatUSD(d.positionSize)}</span>
@@ -151,7 +151,7 @@ function Tag({ direction }: { direction: Decision['decision'] }) {
       : direction === 'SHORT'
       ? 'text-loss-red border-loss-red/40 bg-loss-red/10'
       : 'text-muted border-border bg-white/5';
-  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '—';
+  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '-';
   return (
     <span
       className={cn(

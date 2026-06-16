@@ -13,7 +13,7 @@ interface Ctx {
 }
 
 const fmt = (v: number | undefined, f: (n: number) => string) =>
-  typeof v === 'number' ? f(v) : '—';
+  typeof v === 'number' ? f(v) : '-';
 
 export function MarketContext({ token }: { token: string }) {
   const [ctx, setCtx] = useState<Ctx>({});

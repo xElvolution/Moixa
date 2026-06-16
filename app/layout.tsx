@@ -17,13 +17,13 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MOIXA — Every decision. On-chain. Forever.',
+  title: 'MOIXA - Every decision. On-chain. Forever.',
   description:
-    'MOIXA is an autonomous AI trading agent on Mantle. It thinks out loud. Every signal, decision, and outcome — recorded permanently on-chain.',
+    'MOIXA is an autonomous AI trading agent on Mantle. It thinks out loud. Every signal, decision, and outcome - recorded permanently on-chain.',
   keywords: ['MOIXA', 'Mantle', 'AI', 'autonomous agent', 'ERC-8004', 'trading', 'on-chain'],
   metadataBase: new URL('https://moixa.ai'),
   openGraph: {
-    title: 'MOIXA — Every decision. On-chain. Forever.',
+    title: 'MOIXA - Every decision. On-chain. Forever.',
     description:
       'An autonomous AI trading agent on Mantle. Watch it think live. Every decision permanent.',
     type: 'website',

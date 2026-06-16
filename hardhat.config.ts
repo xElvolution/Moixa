@@ -7,7 +7,8 @@ loadEnv({ path: '.env.local' });
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || '';
 
 const PRIVATE_KEY = process.env.AGENT_PRIVATE_KEY || '0x0000000000000000000000000000000000000000000000000000000000000001';
-const MANTLE_RPC = process.env.MANTLE_RPC_URL || 'https://rpc.mantle.xyz';
+// Mainnet uses its own RPC var so it never inherits the testnet MANTLE_RPC_URL.
+const MANTLE_RPC = process.env.MANTLE_MAINNET_RPC || 'https://rpc.mantle.xyz';
 const MANTLE_SEPOLIA_RPC = process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz';
 
 const config: HardhatUserConfig = {

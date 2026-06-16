@@ -37,7 +37,7 @@ export function DecisionPanel({ recent }: { recent: Decision[] }) {
                 </span>
               </p>
               <p className="font-mono text-[11px] text-muted">
-                block #{d.blockNumber?.toLocaleString() ?? '—'}
+                block #{d.blockNumber?.toLocaleString() ?? '-'}
               </p>
             </div>
             <ReturnPill ret={d.actualReturn ?? null} />
@@ -55,7 +55,7 @@ function DirectionTag({ direction }: { direction: Decision['decision'] }) {
       : direction === 'SHORT'
       ? 'text-loss-red border-loss-red/40 bg-loss-red/10'
       : 'text-muted border-border bg-white/5';
-  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '—';
+  const arrow = direction === 'LONG' ? '▲' : direction === 'SHORT' ? '▼' : '-';
   return (
     <span
       className={cn(
@@ -70,7 +70,7 @@ function DirectionTag({ direction }: { direction: Decision['decision'] }) {
 
 function ReturnPill({ ret }: { ret: number | null }) {
   if (ret === null || ret === undefined) {
-    return <span className="font-mono text-xs text-muted">—</span>;
+    return <span className="font-mono text-xs text-muted">-</span>;
   }
   if (ret === 0) {
     return <span className="font-mono text-xs text-muted">FLAT</span>;

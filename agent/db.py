@@ -5,7 +5,7 @@ Every decision the agent records on-chain is also persisted here so that:
   - the Performance page renders a real equity curve from history, not in-memory
 
 Schema mirrors prisma/schema.prisma. Connection string read from DATABASE_URL.
-Falls back silently if DATABASE_URL is absent — agent still works, just without
+Falls back silently if DATABASE_URL is absent - agent still works, just without
 persisted history (recording on-chain remains the source of truth).
 """
 from __future__ import annotations
@@ -34,11 +34,11 @@ async def init_pool() -> bool:
     if _pool is not None:
         return True
     if asyncpg is None:
-        print("[db] asyncpg not installed — skipping persistence")
+        print("[db] asyncpg not installed - skipping persistence")
         return False
     dsn = _dsn()
     if not dsn:
-        print("[db] DATABASE_URL not set — skipping persistence")
+        print("[db] DATABASE_URL not set - skipping persistence")
         return False
     try:
         # Strip prisma-only flags asyncpg doesn't understand.

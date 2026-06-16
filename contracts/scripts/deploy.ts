@@ -7,13 +7,13 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   const agentAddress = process.env.AGENT_ADDRESS || deployer.address;
 
-  console.log('═══════════════════════════════════════════');
-  console.log('  MOIXA — Deploying to Mantle');
-  console.log('═══════════════════════════════════════════');
+  console.log('');
+  console.log('  MOIXA - Deploying to Mantle');
+  console.log('');
   console.log('Deployer:', deployer.address);
   console.log('Agent:   ', agentAddress);
   console.log('Balance: ', ethers.formatEther(await ethers.provider.getBalance(deployer.address)), 'MNT');
-  console.log('───────────────────────────────────────────');
+  console.log('');
 
   console.log('Deploying MoixaBrain...');
   const Brain = await ethers.getContractFactory('MoixaBrain');
@@ -55,14 +55,14 @@ async function main() {
   update('NEXT_PUBLIC_MOIXA_EXECUTOR_ADDRESS', executorAddr);
   writeFileSync(envPath, env.trim() + '\n');
 
-  console.log('───────────────────────────────────────────');
+  console.log('');
   console.log('  Deployment Summary');
-  console.log('───────────────────────────────────────────');
+  console.log('');
   console.log('  MoixaBrain   ', brainAddr);
   console.log('  MoixaIdentity', identityAddr);
   console.log('  MoixaExecutor', executorAddr);
   console.log('  Agent ID #1 minted to', deployer.address);
-  console.log('═══════════════════════════════════════════');
+  console.log('');
 }
 
 main().catch((err) => {

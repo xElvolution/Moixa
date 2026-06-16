@@ -7,9 +7,25 @@ Last updated: 2026-06-15
 
 ---
 
-## 1. Smart contracts — deployed & verified
+## 0. PRODUCTION - Mantle Mainnet (chainId 5000)
 
-Network: **Mantle Sepolia (chainId 5003)** · Compiler: Solidity 0.8.20, optimizer 200 runs, `viaIR: true`
+Deployed and source-verified on Mantle **mainnet**. Real MNT spent on deploy.
+
+| Contract | Mainnet address | Verified |
+|---|---|---|
+| MoixaBrain | `0xD2624D25f638d6e7D6A48111c181D3Bc52EAb0fB` | [source](https://mantlescan.xyz/address/0xD2624D25f638d6e7D6A48111c181D3Bc52EAb0fB#code) |
+| MoixaIdentity | `0xdE89771dE48344366180af7819500B3C75014798` | [source](https://mantlescan.xyz/address/0xdE89771dE48344366180af7819500B3C75014798#code) |
+| MoixaExecutor | `0x543b4b8c50387cfdc3507162A3e2276e10452eE9` | [source](https://mantlescan.xyz/address/0x543b4b8c50387cfdc3507162A3e2276e10452eE9#code) |
+
+Agent #1 NFT mint tx: `0xe6858b4b43c3bc6cd932f97e6ee7a86a65ffc4dab4c88da74c5d15c38476a205`
+
+On-chain checks: moixaAgent = agent wallet, ownerOf(1) = agent wallet, nextTokenId = 2, totalDecisions = 0.
+
+---
+
+## 1. Smart contracts - Mantle Sepolia (testnet, full lifecycle tested)
+
+Network: **Mantle Sepolia (chainId 5003)** Compiler: Solidity 0.8.20, optimizer 200 runs, `viaIR: true`
 
 | Contract | Address | Verified |
 |---|---|---|

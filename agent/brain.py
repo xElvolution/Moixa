@@ -113,7 +113,7 @@ async def detect_smart_money(token: str) -> Optional[MarketSignal]:
         direction="LONG" if chg >= 0 else "SHORT",
         timeframe="24h",
         source="bybit-oi",
-        detail=f"OI/turnover {ratio:.2f} — leveraged conviction",
+        detail=f"OI/turnover {ratio:.2f} - leveraged conviction",
     )
 
 
@@ -168,7 +168,7 @@ async def detect_cross_market_correlation(token: str) -> Optional[MarketSignal]:
         direction="SHORT" if btc_change < 0 else "LONG",
         timeframe="24h",
         source="btc-correlation",
-        detail=f"BTC moved {btc_change:+.2f}% — altcoins follow",
+        detail=f"BTC moved {btc_change:+.2f}% - altcoins follow",
     )
 
 
@@ -193,7 +193,7 @@ async def forced_signal(token: str, timeframe: str = "1h") -> MarketSignal:
     """Build a REAL signal from live market data for on-demand triggers.
 
     Uses the actual 24h price direction + magnitude from CoinGecko, with a
-    Bybit funding-rate cross-check. Not synthetic data — it reads the real
+    Bybit funding-rate cross-check. Not synthetic data - it reads the real
     market and packages it as a high-conviction signal so a decision fires now.
     """
     data = await _feed.fetch(token)
@@ -207,7 +207,7 @@ async def forced_signal(token: str, timeframe: str = "1h") -> MarketSignal:
         direction=direction,
         timeframe=timeframe,
         source="coingecko",
-        detail=f"24h change {change_24h:+.2f}% — manual analysis trigger",
+        detail=f"24h change {change_24h:+.2f}% - manual analysis trigger",
     )
 
 

@@ -1,8 +1,8 @@
-"""Bybit V5 API client — real market data + (testnet) order execution.
+"""Bybit V5 API client - real market data + (testnet) order execution.
 
 Public endpoints (tickers, funding rate) need no auth and power MOIXA's real
 signals. Trading endpoints are HMAC-signed and only used when API keys are set
-AND MOIXA_LIVE_TRADING=true — default is testnet so the demo stays safe.
+AND MOIXA_LIVE_TRADING=true - default is testnet so the demo stays safe.
 
 Docs: https://bybit-exchange.github.io/docs/v5/intro
 """
@@ -48,7 +48,7 @@ class BybitClient:
     def __init__(self) -> None:
         self._client = httpx.AsyncClient(timeout=10.0, base_url=_base_url())
 
-    # ── Public market data (no auth) ──────────────────────────────────────────
+    # Public market data (no auth)
 
     async def ticker(self, token: str, category: str = "linear") -> dict[str, Any]:
         """Latest ticker: lastPrice, volume24h, turnover24h, fundingRate, ..."""
@@ -114,7 +114,7 @@ class BybitClient:
         except Exception:
             return []
 
-    # ── Authenticated trading (testnet by default) ─────────────────────────────
+    # Authenticated trading (testnet by default)
 
     def _sign(self, timestamp: str, body: str) -> str:
         secret = os.environ["BYBIT_API_SECRET"]
