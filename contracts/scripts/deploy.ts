@@ -1,5 +1,7 @@
+// Default import keeps this runnable under Node's native ESM (Node 24); the cast
+// restores the Hardhat ethers helper types (getSigners, provider, ...).
 import pkg from 'hardhat';
-const { ethers } = pkg;
+const { ethers } = pkg as any;
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
