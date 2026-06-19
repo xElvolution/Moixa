@@ -203,8 +203,28 @@ async def load_recent_decisions(limit: int = 50) -> list[dict[str, Any]]:
                 """,
                 int(limit),
             )
-        # Newest-first → caller can reverse if it wants the same order as before.
+        # Newest-first - caller can reverse if it wants the same order as before.
         return [dict(r) for r in rows]
     except Exception as e:
         print(f"[db] load_recent_decisions failed: {e}")
+        return []
+
+
+async def list_agents(limit: int = 100) -> list[dict[str, Any]]:
+    """All agent identities, highest reputation first (leaderboard)."""
+    if _pool is None:
+        return []
+    try:
+        async with _pool.acquire() as c:
+            rows = await c.fetch(
+                """
+                SELECT * FROM "AgentIdentity"
+                ORDER BY "reputationScore" DESC, "totalTrades" DESC
+                LIMIT $1
+                """,
+                int(limit),
+            )
+        return [dict(r) for r in rows]
+    except Exception as e:
+        print(f"[db] list_agents failed: {e}")
         return []

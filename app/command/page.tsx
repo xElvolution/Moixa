@@ -7,6 +7,8 @@ import { IdentityCard } from '@/components/command/IdentityCard';
 import { LiveChart } from '@/components/command/LiveChart';
 import { MarketContext } from '@/components/command/MarketContext';
 import { MoixaBrain } from '@/components/command/MoixaBrain';
+import { AskMoixa } from '@/components/command/AskMoixa';
+import { VerifyOnChain } from '@/components/VerifyOnChain';
 import { TradeExecutor } from '@/components/command/TradeExecutor';
 import { LiveDot } from '@/components/ui/LiveDot';
 import { Badge } from '@/components/ui/Badge';
@@ -108,7 +110,9 @@ export default function CommandPage() {
           </section>
 
           <aside className="flex flex-col gap-5">
+            <AskMoixa />
             <IdentityCard identity={identity} />
+            <VerifyOnChain />
           </aside>
         </div>
       </div>
@@ -126,7 +130,9 @@ function CommandHeader({ block, connected }: { block: number; connected: boolean
           <span className="text-white tabular-nums">#{block.toLocaleString()}</span>
           <span className="text-muted">·</span>
           <LiveDot tone={connected ? 'cyan' : 'gray'} label={connected ? 'live on mantle' : 'reconnecting'} />
-          <Badge tone="moixa">Mantle 5000</Badge>
+          <Badge tone="moixa">
+            Mantle {process.env.NEXT_PUBLIC_MANTLE_CHAIN_ID || '5003'}
+          </Badge>
         </div>
       </div>
     </div>

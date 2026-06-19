@@ -1,8 +1,12 @@
 import { JsonRpcProvider } from 'ethers';
 
-export const MANTLE_CHAIN_ID = 5000;
+// NEXT_PUBLIC_MANTLE_RPC is browser-safe (server MANTLE_RPC_URL is not exposed
+// to the client). Falls back to the public Mantle RPC.
 export const MANTLE_RPC =
-  process.env.MANTLE_RPC_URL || 'https://rpc.mantle.xyz';
+  process.env.NEXT_PUBLIC_MANTLE_RPC ||
+  process.env.MANTLE_RPC_URL ||
+  'https://rpc.mantle.xyz';
+export const MANTLE_CHAIN_ID = Number(process.env.NEXT_PUBLIC_MANTLE_CHAIN_ID || 5000);
 
 let _provider: JsonRpcProvider | null = null;
 export function getMantleProvider(): JsonRpcProvider {
@@ -29,4 +33,7 @@ export const IDENTITY_ABI = [
   'function getProfile(uint256) view returns (tuple(uint256 agentId, string name, uint256 birthTimestamp, uint256 birthBlock, uint256 totalTrades, uint256 totalVolume, uint256 winRate, uint256 sharpeRatio, uint256 maxDrawdown, uint256 reputationScore, uint256 lastUpdated))',
   'function getReputationHistory(uint256) view returns (uint256[], uint256[])',
   'function tokenURI(uint256) view returns (string)',
+  'function agentOf(address) view returns (uint256)',
+  'function nextTokenId() view returns (uint256)',
+  'function ownerOf(uint256) view returns (address)',
 ];

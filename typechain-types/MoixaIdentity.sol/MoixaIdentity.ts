@@ -68,6 +68,7 @@ export declare namespace MoixaIdentity {
 export interface MoixaIdentityInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "agentOf"
       | "approve"
       | "balanceOf"
       | "getApproved"
@@ -75,6 +76,7 @@ export interface MoixaIdentityInterface extends Interface {
       | "getReputationHistory"
       | "isApprovedForAll"
       | "mintAgentIdentity"
+      | "mintFor"
       | "moixaAgent"
       | "name"
       | "nextTokenId"
@@ -98,6 +100,10 @@ export interface MoixaIdentityInterface extends Interface {
       | "Transfer"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "agentOf",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
@@ -125,6 +131,10 @@ export interface MoixaIdentityInterface extends Interface {
   encodeFunctionData(
     functionFragment: "mintAgentIdentity",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintFor",
+    values: [AddressLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "moixaAgent",
@@ -174,6 +184,7 @@ export interface MoixaIdentityInterface extends Interface {
     ]
   ): string;
 
+  decodeFunctionResult(functionFragment: "agentOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -193,6 +204,7 @@ export interface MoixaIdentityInterface extends Interface {
     functionFragment: "mintAgentIdentity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "mintFor", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "moixaAgent", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
@@ -357,6 +369,8 @@ export interface MoixaIdentity extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  agentOf: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
     [void],
@@ -387,6 +401,12 @@ export interface MoixaIdentity extends BaseContract {
 
   mintAgentIdentity: TypedContractMethod<
     [agentName: string],
+    [bigint],
+    "nonpayable"
+  >;
+
+  mintFor: TypedContractMethod<
+    [to: AddressLike, agentName: string],
     [bigint],
     "nonpayable"
   >;
@@ -474,6 +494,9 @@ export interface MoixaIdentity extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "agentOf"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
@@ -510,6 +533,13 @@ export interface MoixaIdentity extends BaseContract {
   getFunction(
     nameOrSignature: "mintAgentIdentity"
   ): TypedContractMethod<[agentName: string], [bigint], "nonpayable">;
+  getFunction(
+    nameOrSignature: "mintFor"
+  ): TypedContractMethod<
+    [to: AddressLike, agentName: string],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "moixaAgent"
   ): TypedContractMethod<[], [string], "view">;

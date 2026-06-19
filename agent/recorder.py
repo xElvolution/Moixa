@@ -137,6 +137,33 @@ _IDENTITY_ABI = [
             {"name": "lastUpdated", "type": "uint256"},
         ],
     },
+    {
+        "name": "mintFor",
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "inputs": [
+            {"name": "to", "type": "address"},
+            {"name": "agentName", "type": "string"},
+        ],
+        "outputs": [{"name": "", "type": "uint256"}],
+    },
+    {
+        "name": "agentOf",
+        "type": "function",
+        "stateMutability": "view",
+        "inputs": [{"name": "", "type": "address"}],
+        "outputs": [{"name": "", "type": "uint256"}],
+    },
+    {
+        "name": "AgentMinted",
+        "type": "event",
+        "anonymous": False,
+        "inputs": [
+            {"name": "agentId", "type": "uint256", "indexed": True},
+            {"name": "to", "type": "address", "indexed": True},
+            {"name": "name", "type": "string", "indexed": False},
+        ],
+    },
 ]
 
 _AGENT_ID = 1  # Identity NFT #1, minted by deploy.ts
@@ -273,9 +300,25 @@ async def close_decision_onchain(
     )
 
 
-async def update_identity(stats: AgentStats) -> str:
+async def update_identity(stats: AgentStats, agent_id: int = _AGENT_ID) -> str:
     _require_configured()
-    return await asyncio.to_thread(_update_identity_real, stats)
+    return await asyncio.to_thread(_update_identity_real, stats, agent_id)
+
+
+async def mint_agent(to: str, name: str) -> Tuple[str, int]:
+    """Mint an agent identity NFT to `to` (sponsored). Returns (tx_hash, agentId)."""
+    _require_configured()
+    return await asyncio.to_thread(_mint_agent_real, to, name)
+
+
+def read_agent_of(address: str) -> int:
+    """Return the agentId owned by `address`, or 0 if none."""
+    if not _connect() or _identity is None:
+        return 0
+    try:
+        return int(_identity.functions.agentOf(Web3.to_checksum_address(address)).call())
+    except Exception:
+        return 0
 
 
 # Real implementations
@@ -343,11 +386,11 @@ def _close_onchain_real(
     return tx_hash
 
 
-def _update_identity_real(stats: AgentStats) -> str:
+def _update_identity_real(stats: AgentStats, agent_id: int = _AGENT_ID) -> str:
     if not _connect() or _identity is None:
         raise RuntimeError("identity contract not configured")
     fn = _identity.functions.updateReputation(
-        _AGENT_ID,
+        int(agent_id),
         int(stats.totalTrades),
         _cents(stats.totalVolume),
         _bps(stats.winRate),
@@ -356,5 +399,25 @@ def _update_identity_real(stats: AgentStats) -> str:
         int(stats.reputationScore),
     )
     tx_hash, _ = _send(fn)
-    print(f"[recorder] updated identity rep={stats.reputationScore} tx={tx_hash}")
+    print(f"[recorder] updated agent #{agent_id} rep={stats.reputationScore} tx={tx_hash}")
     return tx_hash
+
+
+def _mint_agent_real(to: str, name: str) -> Tuple[str, int]:
+    if not _connect() or _identity is None:
+        raise RuntimeError("identity contract not configured")
+    to_addr = Web3.to_checksum_address(to)
+    fn = _identity.functions.mintFor(to_addr, name)
+    tx_hash, receipt = _send(fn)
+    # Resolve the new agentId from the AgentMinted event, else read agentOf.
+    agent_id = -1
+    try:
+        logs = _identity.events.AgentMinted().process_receipt(receipt)
+        if logs:
+            agent_id = int(logs[0]["args"]["agentId"])
+    except Exception:
+        pass
+    if agent_id < 0:
+        agent_id = int(_identity.functions.agentOf(to_addr).call())
+    print(f"[recorder] minted agent #{agent_id} to {to_addr} tx={tx_hash}")
+    return tx_hash, agent_id

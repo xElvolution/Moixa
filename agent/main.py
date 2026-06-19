@@ -18,6 +18,7 @@ except Exception:
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
+import agents
 import brain
 import db
 import executor
@@ -126,6 +127,56 @@ async def get_market(token: str, points: int = 60) -> dict:
     series = await bybit.get_client().kline(token, points=points)
     ctx = await brain.market_context(token)
     return {"token": token.upper(), "series": series, "context": ctx}
+
+
+@app.post("/agents/mint")
+async def post_agent_mint(body: dict) -> dict:
+    """Mint a user's own agent (sponsored). Body: {address, name?}."""
+    address = (body or {}).get("address", "").strip()
+    name = (body or {}).get("name") or "Agent"
+    if not address:
+        return {"error": "address required"}
+    try:
+        return await agents.mint(address, name)
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/agents/{agent_id}/analyze/{token}")
+async def post_agent_analyze(agent_id: int, token: str) -> dict:
+    """Ask a user's agent to analyze a token (fires the real lifecycle async)."""
+    if agents.get(agent_id) is None:
+        return {"error": f"unknown agent #{agent_id}"}
+    if token.upper() not in {"ETH", "BTC", "MNT"}:
+        return {"error": "unsupported token; use ETH/BTC/MNT"}
+    asyncio.create_task(agents.analyze(agent_id, token))
+    return {"agentId": agent_id, "analyzing": token.upper(), "status": "started"}
+
+
+@app.get("/agents")
+async def get_agents() -> dict:
+    """Leaderboard: all agents, highest reputation first."""
+    live = agents.all_summaries()
+    if live:
+        return {"agents": live}
+    # Fall back to Neon if the in-memory registry is cold.
+    return {"agents": await db.list_agents()}
+
+
+@app.get("/agents/{agent_id}")
+async def get_agent(agent_id: int) -> dict:
+    a = agents.get(agent_id)
+    if a is None:
+        return {"error": "not found"}
+    snap = a["store"].snapshot()
+    return {
+        "agentId": agent_id,
+        "name": a["name"],
+        "address": a["address"],
+        "birthBlock": a["store"].birthBlock,
+        **snap.model_dump(),
+        "decisions": a["decisions"][-50:][::-1],
+    }
 
 
 @app.post("/trigger/{token}")
@@ -289,6 +340,13 @@ async def on_startup() -> None:
             identity_store.birthBlock = bb
     except Exception as e:
         print(f"[startup] birth-block sync skipped: {e}")
+
+    # Register the flagship Agent #1 and restore user agents from Neon.
+    agents.register(1, identity_store.address, "MOIXA", identity_store)
+    try:
+        await agents.hydrate_from_db()
+    except Exception as e:
+        print(f"[startup] agent hydrate skipped: {e}")
 
     # The real trading loop is the product. It autostarts by default.
     if os.environ.get("MOIXA_AUTOSTART_LOOP", "true").lower() == "true":

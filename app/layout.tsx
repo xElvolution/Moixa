@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { Providers } from './providers';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
@@ -40,9 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body className="min-h-screen bg-bg text-text">
-        <Header />
-        <main className="relative">{children}</main>
-        <Footer />
+        <Providers>
+          <Header />
+          <main className="relative">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

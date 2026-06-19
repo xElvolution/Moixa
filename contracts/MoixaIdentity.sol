@@ -118,6 +118,9 @@ contract MoixaIdentity is IERC721Metadata {
     mapping(uint256 => uint256[]) private _reputationHistoryScores;
     mapping(uint256 => uint256[]) private _reputationHistoryTimes;
 
+    // One agent per address (0 = none). Powers "my agent" lookups + the dApp.
+    mapping(address => uint256) public agentOf;
+
     event AgentMinted(uint256 indexed agentId, address indexed to, string name);
     event ReputationUpdated(uint256 indexed agentId, uint256 reputationScore);
 
@@ -210,9 +213,30 @@ contract MoixaIdentity is IERC721Metadata {
         onlyOwner
         returns (uint256)
     {
+        return _mintAgent(msg.sender, agentName);
+    }
+
+    // Mint an agent identity to an arbitrary address. Called by the MOIXA
+    // backend so users can mint without holding gas (sponsored on testnet).
+    // One agent per address.
+    function mintFor(address to, string calldata agentName)
+        external
+        onlyMoixa
+        returns (uint256)
+    {
+        require(to != address(0), "MoixaIdentity: zero to");
+        require(agentOf[to] == 0, "MoixaIdentity: already has agent");
+        return _mintAgent(to, agentName);
+    }
+
+    function _mintAgent(address to, string calldata agentName)
+        internal
+        returns (uint256)
+    {
         uint256 tokenId = nextTokenId++;
-        _owners[tokenId] = msg.sender;
-        _balances[msg.sender] += 1;
+        _owners[tokenId] = to;
+        _balances[to] += 1;
+        agentOf[to] = tokenId;
 
         profiles[tokenId] = AgentProfile({
             agentId: tokenId,
@@ -231,8 +255,8 @@ contract MoixaIdentity is IERC721Metadata {
         _reputationHistoryScores[tokenId].push(500);
         _reputationHistoryTimes[tokenId].push(block.timestamp);
 
-        emit Transfer(address(0), msg.sender, tokenId);
-        emit AgentMinted(tokenId, msg.sender, agentName);
+        emit Transfer(address(0), to, tokenId);
+        emit AgentMinted(tokenId, to, agentName);
         return tokenId;
     }
 

@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { LiveDot } from '@/components/ui/LiveDot';
+import { ConnectWallet } from '@/components/wallet/ConnectWallet';
 
 const NAV = [
   { href: '/command', label: 'Command' },
+  { href: '/agents', label: 'Agents' },
   { href: '/decisions', label: 'Decisions' },
   { href: '/identity', label: 'Identity' },
   { href: '/performance', label: 'Performance' },
-  { href: '/how-it-works', label: 'How It Works' },
 ];
 
 function Logo() {
@@ -61,13 +62,8 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          <LiveDot tone="cyan" label="Live on Mantle" className="hidden sm:inline-flex" />
-          <Link
-            href="/command"
-            className="inline-flex h-9 items-center rounded-md bg-moixa-gradient px-3.5 text-sm font-bold text-black shadow-[0_0_18px_rgba(0,255,209,0.25)] transition-all hover:brightness-110"
-          >
-            Watch Live
-          </Link>
+          <LiveDot tone="cyan" label="Live on Mantle" className="hidden lg:inline-flex" />
+          <ConnectWallet />
         </div>
       </div>
     </header>
